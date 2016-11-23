@@ -25,7 +25,7 @@ import com.fob.tasks.emre.server.RestApiModule;
 import com.fob.tasks.emre.server.RestApiServer;
 import com.google.inject.Guice;
 
-
+@SuppressWarnings("deprecation")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = RestApiServer.class)
 @WebAppConfiguration
@@ -48,9 +48,11 @@ public class TestStackServiceController {
     }
 
     @Test
-    public void test_mainFlow() throws Exception {
-        mockMvc.perform(get("/stackservice/push?item=1").header("authorization", PropertyManager.ACCESS_KEY));
-        mockMvc.perform(get("/stackservice/view").header("authorization", PropertyManager.ACCESS_KEY)
+    public void testMainFlow() throws Exception {
+        // add 1
+        mockMvc.perform(get("/stackservice/push?item=1").header("authorization", PropertyManager.getAuthKey()));
+        // view 1
+        mockMvc.perform(get("/stackservice/view").header("authorization", PropertyManager.getAuthKey())
                 .contentType(contentType))
                 .andExpect(new ResultMatcher() {
                     @Override
@@ -58,14 +60,16 @@ public class TestStackServiceController {
                         assertTrue(arg0.getResponse().getContentAsString().equals("[1]"));
                     }
                 });
-        mockMvc.perform(get("/stackservice/pop").contentType(contentType).header("authorization", PropertyManager.ACCESS_KEY))
+        // pop 1
+        mockMvc.perform(get("/stackservice/pop").contentType(contentType).header("authorization", PropertyManager.getAuthKey()))
                 .andExpect(new ResultMatcher() {
                     @Override
                     public void match(MvcResult arg0) throws Exception {
                         assertTrue(arg0.getResponse().getContentAsString().equals("1"));
                     }
                 });
-        mockMvc.perform(get("/stackservice/view").header("authorization", PropertyManager.ACCESS_KEY)
+        // view emtpy stack
+        mockMvc.perform(get("/stackservice/view").header("authorization", PropertyManager.getAuthKey())
                 .contentType(contentType))
                 .andExpect(new ResultMatcher() {
                     @Override
@@ -73,10 +77,12 @@ public class TestStackServiceController {
                         assertTrue(arg0.getResponse().getContentAsString().equals("[]"));
                     }
                 });
-        mockMvc.perform(get("/stackservice/push?item=2").header("authorization", PropertyManager.ACCESS_KEY));
-        mockMvc.perform(get("/stackservice/push?item=3").header("authorization", PropertyManager.ACCESS_KEY));
-        mockMvc.perform(get("/stackservice/push?item=a").header("authorization", PropertyManager.ACCESS_KEY));
-        mockMvc.perform(get("/stackservice/pop").header("authorization", PropertyManager.ACCESS_KEY)
+        // try to push bunch of ints and one char
+        mockMvc.perform(get("/stackservice/push?item=2").header("authorization", PropertyManager.getAuthKey()));
+        mockMvc.perform(get("/stackservice/push?item=3").header("authorization", PropertyManager.getAuthKey()));
+        mockMvc.perform(get("/stackservice/push?item=a").header("authorization", PropertyManager.getAuthKey()));
+        // push last int item
+        mockMvc.perform(get("/stackservice/pop").header("authorization", PropertyManager.getAuthKey())
                 .contentType(contentType))
                 .andExpect(new ResultMatcher() {
             @Override
@@ -84,7 +90,8 @@ public class TestStackServiceController {
                 assertTrue(arg0.getResponse().getContentAsString().equals("3"));
             }
         });
-        mockMvc.perform(get("/stackservice/view").header("authorization", PropertyManager.ACCESS_KEY)
+        // view only int items
+        mockMvc.perform(get("/stackservice/view").header("authorization", PropertyManager.getAuthKey())
                 .contentType(contentType))
                 .andExpect(new ResultMatcher() {
                     @Override

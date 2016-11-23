@@ -15,36 +15,45 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fob.tasks.emre.common.InjectionManager;
 import com.fob.tasks.emre.common.PropertyManager;
 import com.fob.tasks.emre.server.exception.ElementNotFoundException;
-//import com.fob.tasks.emre.server.exception.UnauthorizedRequestException;
+import com.fob.tasks.emre.server.exception.UnauthorizedRequestException;
 import com.fob.tasks.emre.services.StackServiceBasicImpl;
 
+/**
+ * Rest controller for stack service
+ * @author Emre
+ */
 @RestController
 @RequestMapping("/stackservice")
 public class StackServiceController {
 
     private static Logger logger = LogManager.getLogger(StackServiceController.class);
 
+    /**
+     * Set headers
+     * @param response
+     */
     @ModelAttribute
     public void setResponseHeader(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", PropertyManager.REST_URI);
-        response.setHeader("Access-Control-Allow-Methods",
-                "POST,GET,OPTIONS,DELETE");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
         response.setHeader("Access-Control-Max-Age", Long.toString(60 * 60));
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader(
-                "Access-Control-Allow-Headers",
-                "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization");
+        response.setHeader("Access-Control-Allow-Headers", "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization");
     }
 
+    /**
+     * Check 'authorization' header parameter
+     * @param request
+     */
     @ModelAttribute
     public void validateRequest(HttpServletRequest request) {
-//        if (request.getHeader("authorization") == null ||  !request.getHeader("authorization").equals(PropertyManager.ACCESS_KEY)) {
-//            throw new UnauthorizedRequestException();
-//        }
+        if (request.getHeader("authorization") == null ||  !request.getHeader("authorization").equals(PropertyManager.getAuthKey())) {
+            throw new UnauthorizedRequestException();
+        }
     }
 
     @RequestMapping("/push")
-    public void push(@RequestParam(value="item", defaultValue="X") int item, HttpServletResponse  response) {
+    public void push(@RequestParam(value="item") int item, HttpServletResponse  response) {
         InjectionManager.getInstance(StackServiceBasicImpl.class).push(item);
     }
 

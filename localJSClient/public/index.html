@@ -1,0 +1,19 @@
+<!doctype html>
+<html ng-app="demo">
+    <head>
+        <title>Hello AngularJS</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+        <script src="client.js"></script>
+    </head>
+    <body>
+        <div ng-controller="Main">
+            <button ng-click="pushItem()">Push</button>
+            <input ng-model="pushMe">
+            <p></p>
+            <button ng-click="popItem()">Pop</button>
+            <p></p>
+            <button ng-click="viewStack()">View</button>
+            <p>{{messageText}}</p>
+        </div>
+    </body>
+</html>

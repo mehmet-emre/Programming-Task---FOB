@@ -1,34 +1,28 @@
 package com.fob.tasks.emre.common;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.sql.SQLException;
 
+/**
+ * Supposed to manage db connections to get some basic properties 
+ * but db access is not implemented (seems not necessary for the task)
+ * @author Emre
+ */
 public class PropertyManager {
 
-    // TODO
-    public static String REST_URI = "*";
-    public static String ACCESS_KEY;
+    private static String AUTH_KEY;
 
-    public static void loadProperties() throws IOException{
-        Properties prop = new Properties();
-        InputStream input = null;
-        try {
-            input = new FileInputStream("config.properties");
-            prop.load(input);
+    public static String getAuthKey() {
+        return AUTH_KEY;
+    }
 
-            REST_URI = prop.getProperty("REST_URI");
-            ACCESS_KEY = prop.getProperty("ACCESS_KEY");
-
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    /**
+     * Get project properties from db
+     * @throws SQLException
+     */
+    public static void loadProperties() throws SQLException{
+        /**
+         * ..reading from db...
+         */
+        AUTH_KEY = "0f65448e9f4f195c073d36faf576c69e??==";
     }
 }
